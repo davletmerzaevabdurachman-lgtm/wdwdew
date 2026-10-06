@@ -1,0 +1,2 @@
+export const runtime="nodejs";
+export async function GET(){return Response.json({service:"ABDULS AI",version:"1.0.0",localInference:true,features:["chat","streaming","vision","image","embeddings","speech","tools","research","coding","sandbox"]});}
