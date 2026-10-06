@@ -1,9 +1,9 @@
 services:
   postgres:
-    image: postgres:17-alpine
+    image: pgvector/pgvector:pg17
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: abduls
+      POSTGRES_PASSWORD: change-me
       POSTGRES_DB: abduls_ai
     ports: ["5432:5432"]
     volumes: [postgres_data:/var/lib/postgresql/data]
@@ -14,11 +14,15 @@ services:
   ai-server:
     build: ./ai-server
     environment:
-      AI_SERVER_INTERNAL_TOKEN: change-me
       OLLAMA_BASE_URL: http://ollama:11434
-      CHAT_MODEL: llama3.2
+      CHAT_MODEL: ${CHAT_MODEL:-llama3.2:3b}
+      VISION_MODEL: ${VISION_MODEL:-}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-nomic-embed-text}
+      IMAGE_SERVER_URL: ${IMAGE_SERVER_URL:-}
+      SEARCH_BACKEND_URL: ${SEARCH_BACKEND_URL:-}
+      SANDBOX_ENABLED: ${SANDBOX_ENABLED:-true}
     ports: ["8000:8000"]
-    depends_on: [ollama]
+    depends_on: [ollama, postgres]
 volumes:
   postgres_data:
   ollama_data:
