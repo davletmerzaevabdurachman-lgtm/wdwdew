@@ -1,31 +1,33 @@
 # ABDULS AI
 
-Self-hosted, general-purpose AI platform.
+A real self-hosted AI platform, not an API wrapper.
 
-## Architecture
+## Deployment model
 
-- `web/` — Next.js frontend designed for Vercel
-- `ai-server/` — self-hosted AI gateway and local inference
-- `workers/` — isolated background workers
-- `sandbox/` — isolated code execution
-- `database/` — database schema and migrations
-- `docs/` — architecture and deployment documentation
+The Next.js application is Vercel-compatible. Heavy inference stays on a separately hosted AI server because Vercel serverless functions are not a suitable place for persistent local LLM inference.
 
-## Core rule
+## No commercial AI dependency
 
-ABDULS AI does not require commercial AI API keys. Core inference is performed by locally hosted models.
+Core inference uses a local model backend. There are no required OpenAI, Anthropic, Gemini, Groq or OpenRouter keys.
 
-## Development order
+## Local development
 
-1. Web shell and chat
-2. Self-hosted LLM gateway
-3. Streaming
-4. Context and memory
-5. Files and RAG
-6. Vision
-7. Tools and coding agent
-8. Sandbox
-9. Image generation
-10. Research and speech
+```bash
+cd web
+npm install
+npm run dev
+```
 
-Only implemented capabilities are exposed to users.
+Run the AI server:
+
+```bash
+cd ai-server
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+Run a local model backend such as Ollama separately and set `OLLAMA_BASE_URL` and `CHAT_MODEL`.
+
+The project never presents unimplemented capabilities as completed.
