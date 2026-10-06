@@ -1,17 +1,19 @@
-def build_context(current:list[dict],summaries:list[str],memories:list[str],project:str|None,documents:list[str],max_chars:int=24000)->list[dict]:
- parts=[]
- if project: parts.append("PROJECT:\n"+project)
- if summaries: parts.append("SUMMARIES:\n"+"
-".join(summaries))
- if memories: parts.append("MEMORY:\n"+"
-".join(memories))
- if documents: parts.append("RELEVANT FILES:\n"+"
-".join(documents))
- system="\n\n".join(parts)
- if system: current=[{"role":"system","content":system}]+current
- text=0; out=[]
- for m in reversed(current):
-  n=len(m.get("content",""))
-  if text+n>max_chars: break
-  out.append(m);text+=n
- return list(reversed(out))
+from dataclasses import dataclass
+from typing import Any
+
+@dataclass
+class ContextInput:
+    messages: list[dict[str, Any]]
+    summary: str = ""
+    project: str = ""
+    memories: list[str] | None = None
+    files: list[str] | None = None
+
+def build_context(data: ContextInput) -> list[dict[str, Any]]:
+    out=[]
+    if data.project: out.append({"role":"system","content":f"Project context:\n{data.project}"})
+    if data.summary: out.append({"role":"system","content":f"Conversation summary:\n{data.summary}"})
+    if data.memories: out.append({"role":"system","content":"Relevant memories:\n" + "\n".join(f"- {x}" for x in data.memories[-20:])})
+    if data.files: out.append({"role":"system","content":"Available project files:\n" + "\n".join(f"- {x}" for x in data.files[-100:])})
+    out.extend(data.messages[-40:])
+    return out
