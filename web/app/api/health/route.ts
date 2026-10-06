@@ -1,0 +1,1 @@
+export async function GET(){const base=process.env.AI_SERVER_URL;if(!base)return Response.json({web:"ok",ai:"unconfigured"});try{const r=await fetch(base+"/health",{cache:"no-store"});return Response.json({web:"ok",ai:r.ok?"ok":"error"})}catch{return Response.json({web:"ok",ai:"offline"})}}
