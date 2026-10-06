@@ -1,3 +1,7 @@
-def choose_model(task:str,env:dict)->str|None:
- keys={"chat":"CHAT_MODEL","code":"CODE_MODEL","vision":"VISION_MODEL","image":"IMAGE_MODEL","embed":"EMBEDDING_MODEL","speech":"SPEECH_MODEL"}
- return env.get(keys.get(task,"CHAT_MODEL")) or env.get("CHAT_MODEL")
+import os
+
+def route(capability: str, requested: str | None = None) -> str:
+    if requested:
+        return requested
+    names={"chat":"CHAT_MODEL","vision":"VISION_MODEL","image":"IMAGE_MODEL","embed":"EMBEDDING_MODEL","speech":"SPEECH_MODEL"}
+    return os.getenv(names.get(capability,"CHAT_MODEL"), "")
